@@ -1,0 +1,13 @@
+minio:
+  endpoint: http://192.168.6.1:9000
+  accessKey: TBmBJ7OVWlgjTuog
+  secretKey: UJnvY2fSCh0zM70h5XT4BhzkaA97N18P
+  filHost: http://k2p.xianyun.site
+spring:
+  redis:
+    host: 192.168.6.1
+    port: 6379
+  datasource:
+    username: root
+    password: pVqpaaQXbcmWTY
+    url: jdbc:mysql://192.168.6.1:3306/minio?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
