@@ -4,6 +4,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.example.consoletable.ConsoleTable;
 import org.example.consoletable.enums.Align;
 import org.example.consoletable.table.Cell;
@@ -17,6 +18,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
+@Slf4j
 @Service
 public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> implements IRecordService {
 
@@ -26,6 +28,9 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
     @PostConstruct
     public void calculate() {
         isNeedAddRecord();
+        showRecords();
+    }
+    private void showRecords(){
         List<Record> records = list(Wrappers.<Record>query().lambda().orderByDesc(Record::getDateTime).last("limit 2"));
         Integer myUsed = 0;
         Integer otherUsed = 0;
@@ -51,7 +56,6 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
         }
         int total = myUsed + otherUsed;
         consoleOut(startTime, endTime, total, myUsed, otherUsed, money);
-
     }
 
     private void consoleOut(Date startTime, Date endTime, Integer total, Integer myUsed, Integer otherUsed, Integer money) {
@@ -139,9 +143,6 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
                 }
                 isNeedAddRecord();
         }
-        if (input.equals("y")) {
-            inputRecord();
-        }
     }
 
     private void inputRecord() {
@@ -158,15 +159,14 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
             record.setOther(down_used);
             record.setChargeMoney(money);
             record.setDateTime(new Date());
-            sc.close();
-//        boolean isInsert = save(record);
-//        if (isInsert) {
-//            System.out.println("已插入一条新的记录");
-//        } else {
-//            System.out.println("插入失败");
-//        }
+            boolean isInsert = this.save(record);
+            if (isInsert) {
+                log.info("已插入一条新的记录");
+            } else {
+                log.info("插入失败");
+            }
         } catch (Exception e) {
-            System.out.println("输入有误 请重新输入");
+            log.info("输入有误 请重新输入"+e.getMessage());
             inputRecord();
         }
 
